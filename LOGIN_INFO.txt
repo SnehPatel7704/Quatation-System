@@ -1,0 +1,52 @@
+=====================================
+  QUOTATION SYSTEM - LOGIN INFO
+=====================================
+
+Application URL: http://localhost:3000
+
+-------------------------------------
+DEFAULT ACCOUNTS (All use password: "password")
+-------------------------------------
+
+1. SUPER ADMIN
+   Username: spadmin
+   Password: pass
+   Email:    spadmin@example.com
+   Access:   Full system access + User management
+
+2. ADMIN
+   Username: admin
+   Password: password
+   Email:    admin@example.com
+   Access:   Create/edit quotations, manage companies/products
+
+3. USER
+   Username: user
+   Password: password
+   Email:    user@example.com
+   Access:   View only
+
+-------------------------------------
+QUICK START
+-------------------------------------
+
+macOS/Linux:
+  chmod +x setup.sh && ./setup.sh
+  ./start-all.sh
+
+Windows:
+  setup.bat
+  start-all.bat
+
+Then open: http://localhost:3000
+
+-------------------------------------
+IMPORTANT SECURITY NOTE
+-------------------------------------
+
+⚠️  These are DEFAULT credentials for DEVELOPMENT ONLY!
+⚠️  Change all passwords before production deployment!
+
+See CREDENTIALS.md for complete security information.
+
+=====================================

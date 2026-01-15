@@ -1,0 +1,2 @@
+Error: Could not find or load main class org.apache.maven.wrapper.MavenWrapperMain
+Caused by: java.lang.ClassNotFoundException: org.apache.maven.wrapper.MavenWrapperMain
