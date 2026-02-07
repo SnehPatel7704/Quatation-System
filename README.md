@@ -157,18 +157,29 @@ CREATE DATABASE quotation_db;
 
 ### Backend Setup
 
-1. **Configure database** in `src/main/resources/application.properties`:
+1. **Configure database** in `src/main/resources/application.properties` (recommended: use environment variables):
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/quotation_db?createDatabaseIfNotExist=true
-spring.datasource.username=root
-spring.datasource.password=your_password
+spring.datasource.username=${DB_USERNAME:root}
+spring.datasource.password=${DB_PASSWORD}
 ```
+
+> Tip: The project expects a Maven wrapper (`mvnw` and `.mvn/wrapper/*`). If missing, either install Maven locally or commit the wrapper files so CI and contributors can use `./mvnw` reliably.
 
 2. **Configure email settings** (for quotation notifications):
 ```properties
-spring.mail.username=your_email@gmail.com
-spring.mail.password=your_app_password
+spring.mail.username=${MAIL_USERNAME}
+spring.mail.password=${MAIL_PASSWORD}
 ```
+
+### Configuration & Secrets 🔐
+- Do **not** commit secrets. Use environment variables or a secrets manager. See `.env.example` for sample variables.
+- JWT signing key: set `JWT_SECRET` to a base64-encoded value (32+ bytes) to persist token validity across restarts. Example generator:
+```bash
+# generate a 32-byte base64 secret
+openssl rand -base64 32
+```
+- CI note: to run OWASP NVD-backed scans the workflow will look for `NVD_API_KEY` in repo secrets. If not set the scan may fall back to cached data.
 
 3. **Run the backend application:**
 

@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS quotation_items (
 );
 
 -- Insert default users
--- Super Admin: username='spadmin', password='password'
+-- Super Admin: username='spadmin' (set password during install)
 -- BCrypt hash for 'password': $2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG
 
 -- Super Admin
@@ -77,14 +77,23 @@ INSERT INTO users (username, password, email, role)
 VALUES ('spadmin', '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', 'spadmin@example.com', 'SUPERADMIN')
 ON DUPLICATE KEY UPDATE username=username;
 
--- Admin: username='admin', password='password'
+-- Admin: username='admin' (set password during install)
 -- BCrypt hash for 'password': $2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG
 INSERT INTO users (username, password, email, role) 
 VALUES ('admin', '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', 'admin@example.com', 'ADMIN')
 ON DUPLICATE KEY UPDATE username=username;
 
--- Regular User: username='user', password='password'
+-- Regular User: username='user' (set password during install)
 -- BCrypt hash for 'password': $2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG
 INSERT INTO users (username, password, email, role) 
 VALUES ('user', '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', 'user@example.com', 'USER')
 ON DUPLICATE KEY UPDATE username=username;
+
+
+
+ALTER TABLE users AUTO_INCREMENT = 1001;
+ALTER TABLE quotation_templates AUTO_INCREMENT = 2001;
+ALTER TABLE companies AUTO_INCREMENT = 3001;
+ALTER TABLE products AUTO_INCREMENT = 4001;
+ALTER TABLE quotations AUTO_INCREMENT = 5001;
+ALTER TABLE quotation_items AUTO_INCREMENT = 6001;

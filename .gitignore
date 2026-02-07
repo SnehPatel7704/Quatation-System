@@ -1,0 +1,29 @@
+# Java / Maven
+/target/
+**/target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+*.class
+*.log
+
+# Spring Boot
+*.properties.local
+application.properties.local
+
+# Node
+/node_modules/
+/frontend/node_modules/
+/build/
+/frontend/build/
+
+# IDEs
+.vscode/
+*.iml
+.idea/
+
+# Env files
+.env
+.env.*
+
+# OS
+.DS_Store

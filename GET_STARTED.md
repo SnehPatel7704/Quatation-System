@@ -36,7 +36,7 @@ cd quotation-system
 # Or download and extract the ZIP file
 ```
 
-### Step 2: Configure Database
+### Step 2: Configure Database & Secrets
 
 1. Make sure MySQL is running:
    ```bash
@@ -47,11 +47,15 @@ cd quotation-system
    net start | findstr MySQL
    ```
 
-2. Edit `src/main/resources/application.properties`:
+2. Create a `.env` file at project root (copy from `.env.example`) and set values. Do NOT commit this file.
+
+3. Edit `src/main/resources/application.properties` to read credentials from environment variables (example shown):
    ```properties
-   spring.datasource.username=root
-   spring.datasource.password=YOUR_MYSQL_PASSWORD
+   spring.datasource.username=${DB_USERNAME:root}
+   spring.datasource.password=${DB_PASSWORD}
    ```
+
+4. Provide a base64 `JWT_SECRET` to persist token signing across restarts. See `README.md` for details.
 
 ### Step 3: Run Setup Script
 
