@@ -6,6 +6,8 @@ import { FiPlus, FiEdit, FiTrash2, FiUsers } from 'react-icons/fi';
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingUser, setEditingUser] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     loadUsers();
@@ -20,6 +22,16 @@ const UserManagement = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEdit = (user) => {
+    setEditingUser(user);
+    setShowModal(true);
+  };
+
+  const handleAdd = () => {
+    setEditingUser(null);
+    setShowModal(true);
   };
 
   const handleDelete = async (id) => {
@@ -51,7 +63,7 @@ const UserManagement = () => {
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">User Management</h1>
             <p className="text-gray-600 dark:text-gray-400 mt-1">Manage system users</p>
           </div>
-          <button className="btn btn-primary flex items-center space-x-2">
+          <button onClick={handleAdd} className="btn btn-primary flex items-center space-x-2">
             <FiPlus size={20} />
             <span>Add User</span>
           </button>
@@ -98,12 +110,17 @@ const UserManagement = () => {
                       </td>
                       <td className="table-cell">
                         <div className="flex space-x-2">
-                          <button className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded">
+                          <button 
+                            onClick={() => handleEdit(user)}
+                            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded"
+                            title="Edit"
+                          >
                             <FiEdit size={18} />
                           </button>
                           <button
                             onClick={() => handleDelete(user.id)}
                             className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded"
+                            title="Delete"
                           >
                             <FiTrash2 size={18} />
                           </button>
@@ -116,6 +133,97 @@ const UserManagement = () => {
             </table>
           </div>
         </div>
+
+        {/* Add/Edit Modal */}
+        {showModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
+              <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+                {editingUser ? 'Edit User' : 'Add User'}
+              </h2>
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const data = {
+                  username: formData.get('username'),
+                  email: formData.get('email'),
+                  password: formData.get('password'),
+                  role: formData.get('role')
+                };
+                try {
+                  if (editingUser) {
+                    await userService.update(editingUser.id, data);
+                  } else {
+                    await userService.create(data);
+                  }
+                  setShowModal(false);
+                  loadUsers();
+                } catch (error) {
+                  console.error('Error saving user:', error);
+                  alert('Failed to save user');
+                }
+              }}>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Username *</label>
+                    <input
+                      type="text"
+                      name="username"
+                      defaultValue={editingUser?.username}
+                      required
+                      className="input w-full"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Email *</label>
+                    <input
+                      type="email"
+                      name="email"
+                      defaultValue={editingUser?.email}
+                      required
+                      className="input w-full"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Password {editingUser ? '(leave blank to keep current)' : '*'}
+                    </label>
+                    <input
+                      type="password"
+                      name="password"
+                      required={!editingUser}
+                      className="input w-full"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Role *</label>
+                    <select
+                      name="role"
+                      defaultValue={editingUser?.role || 'USER'}
+                      required
+                      className="input w-full"
+                    >
+                      <option value="USER">User</option>
+                      <option value="ADMIN">Admin</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="flex justify-end space-x-3 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                    className="btn btn-secondary"
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-primary">
+                    {editingUser ? 'Update' : 'Create'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   );

@@ -1,13 +1,55 @@
 import api from './api';
+import { parseApiError } from '../utils/errorHandler';
 
 export const productService = {
-  getAll: () => api.get('/products'),
+  getAll: async () => {
+    try {
+      return await api.get('/products');
+    } catch (error) {
+      throw error;
+    }
+  },
   
-  getById: (id) => api.get(`/products/${id}`),
+  getProducts: async () => {
+    try {
+      const response = await api.get('/products');
+      return response.data;
+    } catch (error) {
+      const parsedError = parseApiError(error);
+      console.error('Error fetching products:', parsedError);
+      throw new Error(parsedError.message || 'Failed to fetch products. Please try again.');
+    }
+  },
   
-  create: (productData) => api.post('/products', productData),
+  getById: async (id) => {
+    try {
+      return await api.get(`/products/${id}`);
+    } catch (error) {
+      throw error;
+    }
+  },
   
-  update: (id, productData) => api.put(`/products/${id}`, productData),
+  create: async (productData) => {
+    try {
+      return await api.post('/products', productData);
+    } catch (error) {
+      throw error;
+    }
+  },
   
-  delete: (id) => api.delete(`/products/${id}`),
+  update: async (id, productData) => {
+    try {
+      return await api.put(`/products/${id}`, productData);
+    } catch (error) {
+      throw error;
+    }
+  },
+  
+  delete: async (id) => {
+    try {
+      return await api.delete(`/products/${id}`);
+    } catch (error) {
+      throw error;
+    }
+  },
 };

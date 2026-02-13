@@ -107,7 +107,7 @@ const Login = () => {
           </form>
 
           {/* Demo Credentials */}
-          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          {/* <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
             <p className="text-xs text-gray-600 dark:text-gray-400 text-center mb-2 font-semibold">
               Demo Credentials
             </p>
@@ -116,12 +116,12 @@ const Login = () => {
               <p><strong>Admin:</strong> admin / password</p>
               <p><strong>User:</strong> user / password</p>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Footer */}
         <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
-          © 2026 Quotation System. All rights reserved.
+          © 2026 Quotation System. All rights reserved by Sneh.
         </p>
       </div>
     </div>

@@ -1,23 +1,89 @@
 import api from './api';
 
 export const quotationService = {
-  getAll: () => api.get('/quotations'),
+  getAll: async () => {
+    try {
+      return await api.get('/quotations');
+    } catch (error) {
+      throw error;
+    }
+  },
   
-  getById: (id) => api.get(`/quotations/${id}`),
+  getById: async (id) => {
+    try {
+      return await api.get(`/quotations/${id}`);
+    } catch (error) {
+      throw error;
+    }
+  },
   
-  create: (quotationData) => api.post('/quotations', quotationData),
+  create: async (quotationData) => {
+    try {
+      return await api.post('/quotations', quotationData);
+    } catch (error) {
+      throw error;
+    }
+  },
   
-  update: (id, quotationData) => api.put(`/quotations/${id}`, quotationData),
+  update: async (id, quotationData) => {
+    try {
+      return await api.put(`/quotations/${id}`, quotationData);
+    } catch (error) {
+      throw error;
+    }
+  },
   
-  delete: (id) => api.delete(`/quotations/${id}`),
+  delete: async (id) => {
+    try {
+      return await api.delete(`/quotations/${id}`);
+    } catch (error) {
+      throw error;
+    }
+  },
   
-  approve: (id, adminEmail, clientEmail) => 
-    api.post(`/quotations/${id}/approve`, null, {
-      params: { adminEmail, clientEmail }
-    }),
+  approve: async (id) => {
+    try {
+      return await api.post(`/quotations/${id}/approve`);
+    } catch (error) {
+      throw error;
+    }
+  },
   
-  sendToClient: (id, clientEmail) => 
-    api.post(`/quotations/${id}/send`, null, {
-      params: { clientEmail }
-    }),
+  reject: async (id, rejectionReason) => {
+    try {
+      return await api.post(`/quotations/${id}/reject`, null, {
+        params: { rejectionReason }
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+  
+  submit: async (id) => {
+    try {
+      return await api.post(`/quotations/${id}/submit`);
+    } catch (error) {
+      throw error;
+    }
+  },
+  
+  sendToClient: async (id, clientEmail) => {
+    try {
+      return await api.post(`/quotations/${id}/send`, null, {
+        params: { clientEmail }
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+  
+  getUpcomingFollowups: async (startDate, endDate) => {
+    try {
+      return await api.get('/quotations/upcoming-followups', {
+        params: { startDate, endDate }
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
 };
