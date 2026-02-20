@@ -1,477 +1,597 @@
 # Quotation Management System
 
-A comprehensive web-based quotation management system built with Spring Boot and React. The system provides features for creating, managing, and tracking quotations with an approval workflow, follow-up tracking, PDF export, and email notifications.
+A full-stack quotation management system with role-based access control, built with Spring Boot (backend) and React with Tailwind CSS (frontend).
 
-## Table of Contents
+## 🚀 Quick Start
 
-- [Features](#features)
-- [Technology Stack](#technology-stack)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Running the Application](#running-the-application)
-- [Running Tests](#running-tests)
-- [API Documentation](#api-documentation)
-- [Project Structure](#project-structure)
-- [User Roles](#user-roles)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
+**👉 New to this project? Start here: [GET_STARTED.md](GET_STARTED.md)**
+
+**Step 1: Run the setup script (first time only)**
+
+**macOS/Linux:**
+```bash
+chmod +x setup.sh
+./setup.sh
+```
+
+**Windows:**
+```cmd
+setup.bat
+```
+
+**Step 2: Start the application**
+
+**macOS/Linux:**
+```bash
+./start-all.sh
+```
+
+**Windows:**
+```cmd
+start-all.bat
+```
+
+Then open `http://localhost:3000` and login with:
+
+**📋 See [CREDENTIALS.md](CREDENTIALS.md) for all login credentials**
+
+- **Super Admin:** `spadmin` / `pass`
+- **Admin:** `admin` / `password`  
+- **User:** `user` / `password`
+
+---
+
+**📋 For detailed setup instructions, see [GET_STARTED.md](GET_STARTED.md) or [SETUP_CHECKLIST.md](SETUP_CHECKLIST.md)**
 
 ## Features
 
-### Core Features
-- **Quotation Management**: Create, edit, view, and delete quotations
-- **Item Management**: Add multiple products/items to quotations with quantities and prices
-- **Company Management**: Manage client companies
-- **Product Management**: Manage product catalog
-- **User Management**: Manage system users with role-based access control
-
-### Advanced Features
-- **Approval Workflow**: Submit quotations for approval, approve or reject with reasons
-- **Revision System**: Automatic creation of revisions when quotations are rejected
-- **Follow-up Tracking**: Set and track follow-up dates for quotations
-- **Dashboard**: View upcoming follow-ups with customizable date filters
-- **PDF Export**: Export approved quotations as professional PDF documents
-- **Email Notifications**: Automatic email notifications for approvals and rejections
-- **Real-time Calculations**: Automatic calculation of item totals and quotation totals
-- **Responsive Design**: Mobile-friendly interface with Tailwind CSS
-
-### Technical Features
-- **JWT Authentication**: Secure token-based authentication
-- **Role-Based Access Control**: Three user roles (USER, ADMIN, SUPERADMIN)
-- **Caching**: Performance optimization with Caffeine cache
-- **Error Handling**: Comprehensive error handling with user-friendly messages
-- **Form Validation**: Client-side and server-side validation
-- **Property-Based Testing**: Comprehensive testing with jqwik and fast-check
-
-## Technology Stack
-
-### Backend
-- **Java 17**
-- **Spring Boot 4.0.2**
-- **Spring Security** with JWT
-- **Spring Data JPA**
-- **MySQL** database
-- **iText7** for PDF generation
-- **Spring Mail** for email notifications
-- **Caffeine** for caching
-- **jqwik** for property-based testing
-
-### Frontend
-- **React 18**
-- **React Router** for navigation
-- **Axios** for API calls
-- **Tailwind CSS** for styling
-- **React Icons** for icons
-- **fast-check** for property-based testing
-
-## Prerequisites
-
-Before you begin, ensure you have the following installed:
-
-- **Java Development Kit (JDK) 17** or higher
-- **Maven 3.6+** (or use the included Maven wrapper)
-- **Node.js 16+** and **npm 8+**
-- **MySQL 8.0+**
-- **Git** (for cloning the repository)
-
-## Installation
-
-### 1. Clone the Repository
-
-```bash
-git clone <repository-url>
-cd quotation-system
-```
-
-### 2. Database Setup
-
-Create a MySQL database for the application:
-
-```sql
-CREATE DATABASE quotation_db;
-CREATE USER 'quotation_user'@'localhost' IDENTIFIED BY 'your_password';
-GRANT ALL PRIVILEGES ON quotation_db.* TO 'quotation_user'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-### 3. Backend Setup
-
-Navigate to the project root directory and configure the database connection:
-
-```bash
-# Copy the example environment file
-cp .env.example .env
-
-# Edit .env with your database credentials
-```
-
-The `.env` file should contain:
-
-```properties
-DB_URL=jdbc:mysql://localhost:3306/quotation_db
-DB_USERNAME=quotation_user
-DB_PASSWORD=your_password
-JWT_SECRET=your-secret-key-min-256-bits
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587
-MAIL_USERNAME=your-email@gmail.com
-MAIL_PASSWORD=your-app-password
-```
-
-Install backend dependencies:
-
-```bash
-./mvnw clean install
-```
-
-### 4. Frontend Setup
-
-Navigate to the frontend directory and install dependencies:
-
-```bash
-cd frontend
-npm install
-```
-
-Configure the frontend environment:
-
-```bash
-# Copy the example environment file
-cp .env.example .env
-
-# Edit .env with your backend URL
-```
-
-The `frontend/.env` file should contain:
-
-```properties
-REACT_APP_API_URL=http://localhost:8080/api
-```
-
-## Configuration
-
-### Database Migration
-
-The application uses Flyway for database migrations. Migrations are automatically applied on startup. Migration files are located in:
-
-```
-src/main/resources/db/migration/
-```
-
-### Email Configuration
-
-For email notifications to work, configure your SMTP settings in the `.env` file. If using Gmail:
-
-1. Enable 2-factor authentication on your Google account
-2. Generate an App Password
-3. Use the App Password in the `MAIL_PASSWORD` field
-
-### JWT Configuration
-
-Generate a secure JWT secret key (minimum 256 bits):
-
-```bash
-openssl rand -base64 32
-```
-
-Add the generated key to your `.env` file as `JWT_SECRET`.
-
-## Running the Application
-
-### Development Mode
-
-#### Start the Backend
-
-From the project root directory:
-
-```bash
-./mvnw spring-boot:run
-```
-
-The backend will start on `http://localhost:8080`
-
-#### Start the Frontend
-
-From the frontend directory:
-
-```bash
-cd frontend
-npm start
-```
-
-The frontend will start on `http://localhost:3000`
-
-### Production Mode
-
-#### Build the Backend
-
-```bash
-./mvnw clean package -DskipTests
-```
-
-The JAR file will be created in `target/QuotationSystem-0.0.1-SNAPSHOT.jar`
-
-#### Run the Backend JAR
-
-```bash
-java -jar target/QuotationSystem-0.0.1-SNAPSHOT.jar
-```
-
-#### Build the Frontend
-
-```bash
-cd frontend
-npm run build
-```
-
-The production build will be created in `frontend/build/`
-
-Serve the frontend using a web server like Nginx or Apache.
-
-## Running Tests
-
-### Backend Tests
-
-Run all backend tests:
-
-```bash
-./mvnw test
-```
-
-Run specific test class:
-
-```bash
-./mvnw test -Dtest=QuotationServiceTest
-```
-
-Run property-based tests:
-
-```bash
-./mvnw test -Dtest=*PropertyTest
-```
-
-### Frontend Tests
-
-Run all frontend tests:
-
-```bash
-cd frontend
-npm test
-```
-
-Run tests with coverage:
-
-```bash
-npm test -- --coverage
-```
-
-## API Documentation
-
-### Interactive Documentation
-
-Once the application is running, access the interactive Swagger UI documentation at:
-
-```
-http://localhost:8080/swagger-ui.html
-```
-
-### OpenAPI Specification
-
-The OpenAPI specification is available at:
-
-```
-http://localhost:8080/v3/api-docs
-```
-
-### Detailed Documentation
-
-See [API_DOCUMENTATION.md](API_DOCUMENTATION.md) for comprehensive API documentation including:
-- All endpoints with request/response examples
-- Authentication requirements
-- Error codes and responses
-- Validation rules
+- **Role-Based Access Control**
+  - Super Admin: Full system access
+  - Admin: Create, edit, approve quotations
+  - User: View-only access
+
+- **Quotation Management**
+  - Create and manage quotations
+  - Upload and customize templates
+  - Track quotation status
+  - Email notifications
+
+- **Theme Support**
+  - Light/Dark mode toggle
+  - Persistent theme preference
+
+- **Responsive Design**
+  - Mobile-friendly interface
+  - Modern UI with Tailwind CSS
 
 ## Project Structure
 
 ```
 quotation-system/
-├── src/
-│   ├── main/
-│   │   ├── java/com/quotation/
-│   │   │   ├── config/          # Configuration classes
-│   │   │   ├── controller/      # REST controllers
-│   │   │   ├── dto/             # Data Transfer Objects
-│   │   │   ├── model/           # Domain models
-│   │   │   ├── repository/      # Data access layer
-│   │   │   ├── service/         # Business logic
-│   │   │   └── util/            # Utility classes
-│   │   └── resources/
-│   │       ├── db/migration/    # Database migrations
-│   │       ├── templates/       # Email templates
-│   │       └── application.properties
-│   └── test/                    # Backend tests
-├── frontend/
-│   ├── public/                  # Static files
-│   └── src/
-│       ├── components/          # React components
-│       │   ├── common/          # Reusable components
-│       │   └── layout/          # Layout components
-│       ├── contexts/            # React contexts
-│       ├── hooks/               # Custom hooks
-│       ├── pages/               # Page components
-│       ├── services/            # API services
-│       └── utils/               # Utility functions
-├── .env                         # Backend environment variables
-├── pom.xml                      # Maven configuration
-└── README.md                    # This file
+├── backend (Spring Boot)
+│   └── src/main/
+│       ├── java/com/quotation/
+│       │   ├── config/          # Security, JWT configuration
+│       │   ├── controller/      # REST API endpoints
+│       │   ├── dto/             # Data Transfer Objects
+│       │   ├── model/           # Entity models
+│       │   ├── repository/      # JDBC repositories
+│       │   └── service/         # Business logic
+│       └── resources/
+│           ├── application.properties
+│           └── schema.sql       # Database schema
+│
+└── frontend (React + Tailwind CSS)
+    └── src/
+        ├── components/
+        │   ├── common/          # Reusable components
+        │   └── layout/          # Layout components
+        ├── contexts/            # React contexts (Auth, Theme)
+        ├── pages/               # Page components
+        │   ├── auth/
+        │   ├── dashboard/
+        │   ├── quotations/
+        │   ├── users/
+        │   ├── companies/
+        │   └── products/
+        └── services/            # API service layer
 ```
 
-## User Roles
+## Technology Stack
 
-The system has three user roles with different permissions:
+### Backend
+- Java 17
+- Spring Boot 3.2.1
+- Spring Security with JWT
+- Spring JDBC
+- MySQL Database
+- JavaMail for email notifications
+- Apache POI for Excel processing
 
-### USER
-- View quotations
-- Create and edit DRAFT quotations
-- Export PDFs of approved quotations
+### Frontend
+- React 18
+- React Router v6
+- Tailwind CSS 3
+- Axios for API calls
+- React Icons
+- Context API for state management
 
-### ADMIN
-- All USER permissions
-- Approve and reject quotations
-- View dashboard with upcoming follow-ups
-- Manage companies and products
+## Setup Instructions
 
-### SUPERADMIN
-- All ADMIN permissions
-- Manage users (create, edit, delete)
-- Full system access
+### Prerequisites
+- Java 17 or higher
+- Node.js 16 or higher
+- MySQL 8.0 or higher
+- Maven 3.6 or higher
 
-### Default Users
+### Database Setup
 
-After initial setup, you can create users through the SUPERADMIN interface. The first user should be created manually in the database or through a data migration script.
+**macOS/Linux:**
+```bash
+# Install MySQL (if not installed)
+brew install mysql
+
+# Start MySQL service
+brew services start mysql
+
+# Login to MySQL
+mysql -u root -p
+
+# Create database (optional, auto-created by app)
+CREATE DATABASE quotation_db;
+```
+
+**Windows:**
+```cmd
+# Download and install MySQL from https://dev.mysql.com/downloads/installer/
+
+# Start MySQL service
+net start MySQL80
+
+# Login to MySQL
+mysql -u root -p
+
+# Create database (optional, auto-created by app)
+CREATE DATABASE quotation_db;
+```
+
+### Backend Setup
+
+1. **Configure database** in `src/main/resources/application.properties` (recommended: use environment variables):
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/quotation_db?createDatabaseIfNotExist=true
+spring.datasource.username=${DB_USERNAME:root}
+spring.datasource.password=${DB_PASSWORD}
+```
+
+> Tip: The project expects a Maven wrapper (`mvnw` and `.mvn/wrapper/*`). If missing, either install Maven locally or commit the wrapper files so CI and contributors can use `./mvnw` reliably.
+
+2. **Configure email settings** (for quotation notifications):
+```properties
+spring.mail.username=${MAIL_USERNAME}
+spring.mail.password=${MAIL_PASSWORD}
+```
+
+### Configuration & Secrets 🔐
+- Do **not** commit secrets. Use environment variables or a secrets manager. See `.env.example` for sample variables.
+- JWT signing key: set `JWT_SECRET` to a base64-encoded value (32+ bytes) to persist token validity across restarts. Example generator:
+```bash
+# generate a 32-byte base64 secret
+openssl rand -base64 32
+```
+- CI note: to run OWASP NVD-backed scans the workflow will look for `NVD_API_KEY` in repo secrets. If not set the scan may fall back to cached data.
+
+3. **Run the backend application:**
+
+**macOS/Linux:**
+```bash
+# Using Maven Wrapper (recommended)
+./mvnw spring-boot:run
+
+# Or using Maven directly
+mvn spring-boot:run
+
+# Or build and run JAR
+./mvnw clean package
+java -jar target/quotation-system-1.0.0.jar
+```
+
+**Windows:**
+```cmd
+# Using Maven Wrapper (recommended)
+mvnw.cmd spring-boot:run
+
+# Or using Maven directly
+mvn spring-boot:run
+
+# Or build and run JAR
+mvnw.cmd clean package
+java -jar target\quotation-system-1.0.0.jar
+```
+
+Backend will start on `http://localhost:8080`
+
+### Frontend Setup
+
+**macOS/Linux:**
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+
+# Or using Yarn
+yarn install
+yarn start
+```
+
+**Windows:**
+```cmd
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+
+# Or using Yarn
+yarn install
+yarn start
+```
+
+Frontend will start on `http://localhost:3000`
+
+### Running Both Servers Simultaneously
+
+**macOS/Linux:**
+```bash
+# Terminal 1 - Backend
+./mvnw spring-boot:run
+
+# Terminal 2 - Frontend
+cd frontend && npm start
+```
+
+**Windows:**
+```cmd
+# Command Prompt 1 - Backend
+mvnw.cmd spring-boot:run
+
+# Command Prompt 2 - Frontend
+cd frontend && npm start
+```
+
+### Building for Production
+
+**Backend:**
+
+**macOS/Linux:**
+```bash
+./mvnw clean package -DskipTests
+java -jar target/quotation-system-1.0.0.jar
+```
+
+**Windows:**
+```cmd
+mvnw.cmd clean package -DskipTests
+java -jar target\quotation-system-1.0.0.jar
+```
+
+**Frontend:**
+
+**macOS/Linux:**
+```bash
+cd frontend
+npm run build
+# Serve the build folder using a static server
+npx serve -s build
+```
+
+**Windows:**
+```cmd
+cd frontend
+npm run build
+REM Serve the build folder using a static server
+npx serve -s build
+```
+
+## Default Credentials
+
+**📋 See [CREDENTIALS.md](CREDENTIALS.md) for complete login information**
+
+| Role | Username | Password | Access Level |
+|------|----------|----------|--------------|
+| **Super Admin** | `spadmin` | `pass` | Full system access |
+| **Admin** | `admin` | `password` | Create/edit quotations, manage data |
+| **User** | `user` | `password` | View only |
+
+⚠️ **Important:** Change these passwords before production use!
+
+## Quick Start Guide
+
+### Option 1: Using Startup Scripts (Easiest)
+
+**macOS/Linux:**
+```bash
+# Make scripts executable (first time only)
+chmod +x start-backend.sh start-frontend.sh start-all.sh
+
+# Start both backend and frontend together
+./start-all.sh
+
+# Or start them separately in different terminals:
+# Terminal 1:
+./start-backend.sh
+
+# Terminal 2:
+./start-frontend.sh
+```
+
+**Windows:**
+```cmd
+# Start both backend and frontend together (opens 2 windows)
+start-all.bat
+
+# Or start them separately in different command prompts:
+# Command Prompt 1:
+start-backend.bat
+
+# Command Prompt 2:
+start-frontend.bat
+```
+
+### Option 2: Manual Setup
+
+### 1. Clone or Download the Project
+
+**macOS/Linux:**
+```bash
+git clone <repository-url>
+cd quotation-system
+```
+
+**Windows:**
+```cmd
+git clone <repository-url>
+cd quotation-system
+```
+
+### 2. Setup MySQL Database
+
+Make sure MySQL is running and update credentials in `src/main/resources/application.properties`
+
+### 3. Start Backend (Terminal/CMD 1)
+
+**macOS/Linux:**
+```bash
+./mvnw spring-boot:run
+```
+
+**Windows:**
+```cmd
+mvnw.cmd spring-boot:run
+```
+
+Wait for: `Started QuotationSystemApplication in X seconds`
+
+### 4. Start Frontend (Terminal/CMD 2)
+
+**macOS/Linux:**
+```bash
+cd frontend
+npm install
+npm start
+```
+
+**Windows:**
+```cmd
+cd frontend
+npm install
+npm start
+```
+
+### 5. Access the Application
+
+Open browser and go to: `http://localhost:3000`
+
+Login with: `spadmin` / `pass`
 
 ## Troubleshooting
 
 ### Backend Issues
 
-**Problem:** Application fails to start with database connection error
+**Port 8080 already in use:**
 
-**Solution:** 
-- Verify MySQL is running: `sudo systemctl status mysql`
-- Check database credentials in `.env`
-- Ensure database exists: `mysql -u root -p -e "SHOW DATABASES;"`
+**macOS/Linux:**
+```bash
+# Find process using port 8080
+lsof -i :8080
 
-**Problem:** JWT token errors
+# Kill the process
+kill -9 <PID>
+```
 
-**Solution:**
-- Ensure `JWT_SECRET` is set in `.env` and is at least 256 bits
-- Clear browser localStorage and login again
+**Windows:**
+```cmd
+# Find process using port 8080
+netstat -ano | findstr :8080
 
-**Problem:** Email notifications not working
+# Kill the process
+taskkill /PID <PID> /F
+```
 
-**Solution:**
-- Verify SMTP settings in `.env`
-- Check if firewall is blocking SMTP port
-- For Gmail, ensure App Password is used (not regular password)
+**MySQL Connection Error:**
+- Verify MySQL is running
+- Check username/password in `application.properties`
+- Ensure database exists or `createDatabaseIfNotExist=true` is set
+
+**Maven Build Errors:**
+
+**macOS/Linux:**
+```bash
+# Clean and rebuild
+./mvnw clean install -U
+```
+
+**Windows:**
+```cmd
+# Clean and rebuild
+mvnw.cmd clean install -U
+```
 
 ### Frontend Issues
 
-**Problem:** API calls failing with CORS errors
+**Port 3000 already in use:**
 
-**Solution:**
-- Verify backend is running on port 8080
-- Check `REACT_APP_API_URL` in `frontend/.env`
-- Ensure CORS is properly configured in backend
-
-**Problem:** Build fails with dependency errors
-
-**Solution:**
+**macOS/Linux:**
 ```bash
-cd frontend
+# Find and kill process
+lsof -i :3000
+kill -9 <PID>
+
+# Or run on different port
+PORT=3001 npm start
+```
+
+**Windows:**
+```cmd
+# Find and kill process
+netstat -ano | findstr :3000
+taskkill /PID <PID> /F
+
+# Or run on different port
+set PORT=3001 && npm start
+```
+
+**Node modules issues:**
+
+**macOS/Linux:**
+```bash
+# Clear cache and reinstall
 rm -rf node_modules package-lock.json
+npm cache clean --force
 npm install
 ```
 
-### Database Issues
+**Windows:**
+```cmd
+# Clear cache and reinstall
+rmdir /s /q node_modules
+del package-lock.json
+npm cache clean --force
+npm install
+```
 
-**Problem:** Migration fails
+**CORS Errors:**
+- Ensure backend is running on port 8080
+- Check `SecurityConfig.java` CORS configuration
+- Verify `frontend/package.json` has `"proxy": "http://localhost:8080"`
 
-**Solution:**
-- Check Flyway migration files in `src/main/resources/db/migration/`
-- Verify migration version numbers are sequential
-- Check `flyway_schema_history` table for failed migrations
-- If needed, repair: `./mvnw flyway:repair`
+### Common Issues
 
-## Development Guidelines
+**JWT Token Expired:**
+- Login again to get a new token
+- Token expires after 24 hours
 
-### Code Style
+**Theme Not Persisting:**
+- Check browser localStorage is enabled
+- Clear browser cache and try again
 
-- **Backend**: Follow Java naming conventions and Spring Boot best practices
-- **Frontend**: Follow React best practices and use functional components with hooks
-- **Formatting**: Use consistent indentation (2 spaces for JS/JSX, 4 spaces for Java)
+**Email Not Sending:**
+- Verify SMTP settings in `application.properties`
+- For Gmail, use App Password (not regular password)
+- Enable "Less secure app access" or use OAuth2
 
-### Git Workflow
+## API Endpoints
 
-1. Create a feature branch: `git checkout -b feature/your-feature-name`
-2. Make your changes and commit: `git commit -m "Description of changes"`
-3. Push to remote: `git push origin feature/your-feature-name`
-4. Create a Pull Request
+### Authentication
+- `POST /api/auth/login` - User login
+- `GET /api/auth/me` - Get current user
 
-### Testing
+### Quotations
+- `GET /api/quotations` - List all quotations
+- `GET /api/quotations/{id}` - Get quotation by ID
+- `POST /api/quotations` - Create quotation
+- `PUT /api/quotations/{id}` - Update quotation
+- `DELETE /api/quotations/{id}` - Delete quotation
+- `POST /api/quotations/{id}/approve` - Approve quotation
+- `POST /api/quotations/{id}/send` - Send to client
 
-- Write unit tests for all new features
-- Write property-based tests for core business logic
-- Ensure all tests pass before committing: `./mvnw test && cd frontend && npm test`
-- Maintain test coverage above 80% for backend, 70% for frontend
+### Users (Super Admin only)
+- `GET /api/superadmin/users` - List users
+- `POST /api/superadmin/users` - Create user
+- `PUT /api/superadmin/users/{id}` - Update user
+- `DELETE /api/superadmin/users/{id}` - Delete user
 
-## Performance Optimization
+### Companies
+- `GET /api/companies` - List companies
+- `POST /api/companies` - Create company
+- `PUT /api/companies/{id}` - Update company
+- `DELETE /api/companies/{id}` - Delete company
 
-### Caching
+### Products
+- `GET /api/products` - List products
+- `POST /api/products` - Create product
+- `PUT /api/products/{id}` - Update product
+- `DELETE /api/products/{id}` - Delete product
 
-The application uses Caffeine cache for frequently accessed data:
-- Company list (5-minute TTL)
-- Product list (5-minute TTL)
+## Features Implementation Status
 
-### Database Optimization
-
-- Indexes are created on frequently queried columns
-- JOIN queries are used to minimize database round trips
-- Pagination is implemented for large result sets
-
-## Security Considerations
-
-- All passwords are hashed using BCrypt
-- JWT tokens expire after a configurable period
-- All API endpoints require authentication (except login)
-- Role-based access control is enforced at controller and service layers
-- Input validation is performed on both client and server sides
-- SQL injection is prevented through parameterized queries
-
-## Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes with appropriate tests
-4. Ensure all tests pass
-5. Submit a pull request with a clear description of changes
+✅ User authentication with JWT
+✅ Role-based access control
+✅ Quotation CRUD operations
+✅ Company management
+✅ Product management
+✅ User management (Super Admin)
+✅ Dark/Light theme toggle
+✅ Responsive design
+✅ Email notifications
+⏳ Template customization (Coming soon)
+⏳ File upload for quotations (Coming soon)
+⏳ PDF generation (Coming soon)
 
 ## License
 
-This project is licensed under the Apache License 2.0 - see the LICENSE file for details.
+MIT License
 
-## Support
+---
 
-For support or questions:
-- Email: support@quotationsystem.com
-- Documentation: See [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
-- Issues: Create an issue in the repository
+## 📚 Documentation
 
-## Acknowledgments
+- **[GET_STARTED.md](GET_STARTED.md)** - 🚀 **START HERE** - Get up and running in 5 minutes
+- **[CREDENTIALS.md](CREDENTIALS.md)** - 🔑 Default login credentials for all user roles
+- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - 🔧 Common issues and solutions
+- **[MAVEN_SETUP.md](MAVEN_SETUP.md)** - 📦 Maven wrapper issues and fixes
+- **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - Quick commands and common tasks
+- **[PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md)** - Complete project architecture and structure
+- **[SETUP_CHECKLIST.md](SETUP_CHECKLIST.md)** - Detailed setup checklist
+- **[SCRIPTS_GUIDE.md](SCRIPTS_GUIDE.md)** - Complete guide to all startup scripts
 
-- Spring Boot team for the excellent framework
-- React team for the powerful UI library
-- All contributors who have helped improve this project
+## 🎯 Quick Links
+
+- Backend API: http://localhost:8080
+- Frontend UI: http://localhost:3000
+- Default Login: `spadmin` / `pass`
+
+## 📞 Support
+
+For issues and questions:
+1. Check the documentation files above
+2. Review the troubleshooting section
+3. Check application logs
+4. Verify all prerequisites are installed
+
+---
+
+**Built with ❤️ using Spring Boot and React**
+
+
+
+
+jdbc:mysql://localhost:3306/?user=root
